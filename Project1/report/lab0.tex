@@ -19,6 +19,10 @@
 % 解
 \providecommand{\sol}{\textbf{解}.~}
 
+\renewcommand{\theFancyVerbLine}{\ttfamily
+\textcolor[rgb]{0.5,0.5,1.0}{\tiny
+\oldstylenums{\arabic{FancyVerbLine}}}}
+
 \begin{document}
 \title{\normalsize \underline{计算机系统结构(A)}\\\LARGE 实验 1}
 \author{李子龙 518070910095}
@@ -181,7 +185,12 @@ equal test 2 result = 0
     \end{quote}
     会打印文件的行数、单词数、文件大小。
 
-    
+    仿照 Ubuntu 的 \texttt{wc} 命令，补充了 \fname{wc.c}，运行结果如下：
+
+    \includegraphics[width=0.9\textwidth]{wc.png}
+
+    \fname{wc.c}
+    \inputminted[breaklines,autogobble,linenos,numbersep=1mm,frame=lines,framesep=2mm,fontsize=\scriptsize,]{c}{../lab0/wc.c}
 
 \end{problems}
 
