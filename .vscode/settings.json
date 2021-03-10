@@ -89,6 +89,7 @@
     "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
     "python.pythonPath": "C:\\ProgramData\\Anaconda3\\python.exe",
     "files.associations": {
-        "ctype.h": "c"
+        "ctype.h": "c",
+        "signal.h": "c"
     },
 }

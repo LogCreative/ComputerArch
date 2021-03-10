@@ -1,0 +1,152 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[UTF8]{ctex}     %先引入ctex
+\usepackage[utf8]{inputenc} %再引入inputenc
+\usepackage{graphicx}
+% \usepackage{lazylatex}
+\usepackage{minted}
+\usepackage{amsmath}
+\usepackage{bookmark}
+\usepackage{enumerate}
+\usepackage{geometry}
+% \tcbuselibrary{documentation}
+\graphicspath{{img/}}
+% 边距
+\geometry{left=2.0cm,right=2.0cm,top=2.0cm,bottom=3.0cm}
+% 大题
+\newenvironment{problems}{\begin{list}{}{\renewcommand{\makelabel}[1]{\textbf{##1}.\hfil}}}{\end{list}}
+% 小题
+\newenvironment{steps}{\begin{list}{}{\renewcommand{\makelabel}[1]{(##1)\hfil}}}{\end{list}}
+% 答
+\providecommand{\ans}{\textbf{答}:~}
+% 解
+\providecommand{\sol}{\textbf{解}.~}
+
+\setminted{breaklines,autogobble,frame=lines,framesep=2mm,fontsize=\scriptsize}
+
+\begin{document}
+\title{\normalsize \underline{计算机系统结构(A)}\\\LARGE 第 1 次作业}
+\author{李子龙 518070910095}
+\date{\today}
+\maketitle
+
+\begin{problems}
+    \item[1] 假定机器M的时钟频率为1.2GHz，某程序P在机器M上的执行时间为12秒钟。对P优化时，将其所有的乘4指令都换成了一条左移2位的指令，得到优化后的程序P'。已知在M上乘法指令的CPI为5，左移指令的CPI为2，P的执行时间是P'执行时间的1.2倍，则P中有多少条乘法指令被替换成了左移指令被执行？
+     
+    \sol 根据公式：
+    \begin{equation*}
+        \text{CPU 时间} = \text{指令数}\times\frac{\text{CPI}}{\text{时钟频率}}
+    \end{equation*}
+    可以得到对于程序P，
+    \begin{equation*}
+        12\text{s} = n \times \frac{5}{\text{1.2GHz}}
+    \end{equation*}
+    对于程序P'，
+    \begin{equation*}
+        10\text{s} = (n - w) \times \frac{5}{\text{1.2GHz}} + w\times \frac{2}{\text{1.2GHz}}
+    \end{equation*}
+    联立可以解得
+    \begin{equation*}
+        w = 8\times 10^8
+    \end{equation*}
+    条乘法指令被替换成了左移指令被执行。
+    \item[2] 图形处理器中经常需要的一种转换是求平方根。浮点（FP）平方根的实现在性能方面有很大差异，特别是在为图形设计的处理器中，尤为明显。假设FP平方根（FPSQR）占用一项关键图形基准测试中30\%的执行时间。有一项提议：升级FPSQR硬件，使这一运算速度提高到原来的10倍。另一项提议是让图形处理器中所有FP指令的运行速度提高到原来的1.6倍，FP指令占用该应用程序一半的执行时间。设计团队相信，他们使所有FP指令执行速度提高到1.6倍所需要的工作量与加快平方根运算的工作量相同。试比较这两种设计方案。
+    
+    \sol 根据 Amdahl 定律：
+    \begin{equation*}
+        \text{改进后的运行时间} = \frac{\text{受改进影响的执行时间}}{\text{改进量}} + \text{不受影响的执行时间} 
+    \end{equation*}
+    则假设该基准测试原来需要运行 100 秒，则升级 FPSQR 硬件后运行时间变为
+    \begin{equation*}
+        73 = \frac{30}{10} + (100 - 30)
+    \end{equation*}
+    而使所有 FP 指令的运行速度提高到原来的 10 倍后的运行时间变为
+    \begin{equation*}
+        81.25 = \frac{50}{1.6} + (100 - 50)
+    \end{equation*}
+    因此如果两种方案的工作量是相同的，那么\textbf{升级 FPSQR 硬件}会让执行时间更短，该方案是更好的。
+    \item[3] 假设我们在对有符号值使用补码运算的32位机器上运行代码。对于有符号值使用的是算术右移，对无符号值使用的是逻辑右移。变量的声明和初始化如下：
+     
+    \begin{minted}{cpp} 
+    int x = foo(); //调用某某函数，给x赋值
+    int y = bar(); //调用某某函数，给y赋值
+    unsigned ux = x;
+    unsigned uy = y;
+    \end{minted}
+
+    对于下面每个表达式，证明对于所有的$x$和$y$值，都为真（等于1）；或者（2）给出使得它为假的$x$和$y$值；
+
+    \sol \begin{enumerate}[A.]
+        \item \texttt{(x>0) || (x-1<0)} \textbf{假:} $x\geq 1$ 或 $x \leq 0$ 都会使其为假。
+        \item \texttt{(x\&7) != 7 || (x<<29<0)} \textbf{真。} 因为如果第一个式子为假就意味着\texttt{x\&7 == 7}，而 7 是\texttt{111}，所以按位与运算后为7就意味着$x$的后三位为\texttt{111}。左移29位后$x$一定是\texttt{1110 0000 0000 0000 0000 0000 0000 0000}=-536870912，由于第一位为符号位，所以该值必定为负数，所以后者成立。
+        \item \texttt{(x * x) >= 0} \textbf{假。} 因为32位符号数的最大值为\texttt{0111 1111 1111 1111 1111 1111 1111 1111}$=2^{31}-1$，那么只要$x^2\geq 2^{31}$就会导致上溢，$x\geq 46341$，上溢出就会导致结果\emph{可能}会小于0，其中$x=46341$就会使得其为负值。所有使得该结果为负的情况是\texttt{(x * x)\& 0x8000 0000 == 0x8000 0000}的$x$，也就是截断后的结果最高位为\texttt{1}的情形。%什么情况下会导致这个数
+        \item \texttt{x>0 || -x>=0} \textbf{假：} 当$x=$\texttt{1000 0000 0000 0000 0000 0000 0000 0000}时，前者不成立因为符号位为 1，而后者采用加法逆元定义，由于\texttt{0x8000 0000} + \texttt{0x8000 0000} = \texttt{0x0000 0000}被截断，所以其最小值是其本身，也就是仍然是一个小于 0 的数字。
+        \item \texttt{x+y == uy+ux} \textbf{真。} 符号整数和无符号整数在二进制上的加法规则是一致的，转换为无符号整数时由于宽度是相等的，所以数据不会有舍弃，得到的二进制码也将是一致的。所以该式永真。
+        \item \texttt{x*$\sim$y + uy*ux == -x} \textbf{真。} \texttt{x*$\sim$y + uy*ux = x*(-(y+1)) + uy * ux = -x}，乘法运算两者同用一个乘法器，没有二进制码上的区别。
+        \item \texttt{x*4 + y*8 == (x<<2)+(y<<3)} \textbf{真。}左移运算是等价的，\texttt{x*4==x<<2}，\texttt{y*8==y<<3}。
+        \item \texttt{((x>>2)<<2)<=x} \textbf{真。}算数右移不会影响符号位的信息，左移后可能会导致后面两位为0，所以正数经过该操作后会变为更小的正数，负数经过该操作后会变为更小的负数。
+    \end{enumerate}
+    
+    \item[4] 假定在一个程序中定义了变量x、y和i，其中，x和y是float型变量（用IEEE754单精度浮点数表示），i是16位short型变量（用补码表示）。程序执行到某一时刻，x = –0.125、y=7.5、i=100，它们都被写到了主存（按字节编址），其地址分别是100，108和112。请分别画出在大端机器和小端机器上变量x、y和i在内存的存放位置。
+    
+    \sol 规格化浮点数 $x=-0.125=-\frac{1}{2^8}=-0.001_2=-1\times 2^{-3}$，
+    $y=7.5=111.1_2=1.111\times 2^{2}$，$i=0100 0100_2$。浮点数按照 IEEE754 表示：
+    
+    x: \fbox{1} \fbox{0}\fbox{1}\fbox{1}\fbox{1}\fbox{1}\fbox{1}\fbox{0}\fbox{0} \fbox{0}\fbox{0}\fbox{0}\fbox{0}\fbox{0}\fbox{0}\fbox{0}\fbox{0}\fbox{0}\fbox{0}\fbox{0}\fbox{0}\fbox{0}\fbox{0}\fbox{0}\fbox{0}\fbox{0}\fbox{0}\fbox{0}\fbox{0}\fbox{0}\fbox{0}\fbox{0}
+
+    x: \texttt{0xBE000000}
+
+    y: \fbox{0} \fbox{1}\fbox{0}\fbox{0}\fbox{0}\fbox{0}\fbox{0}\fbox{0}\fbox{1} \fbox{1}\fbox{1}\fbox{1}\fbox{0}\fbox{0}\fbox{0}\fbox{0}\fbox{0}\fbox{0}\fbox{0}\fbox{0}\fbox{0}\fbox{0}\fbox{0}\fbox{0}\fbox{0}\fbox{0}\fbox{0}\fbox{0}\fbox{0}\fbox{0}\fbox{0}\fbox{0}
+
+    y: \texttt{0x40F00000}
+
+    i: \fbox{0}\fbox{0}\fbox{0}\fbox{0} \fbox{0}\fbox{0}\fbox{0}\fbox{0} \fbox{0}\fbox{1}\fbox{0}\fbox{0} \fbox{0}\fbox{1}\fbox{0}\fbox{0} 
+
+    i: \texttt{0x0044}
+
+    \begin{tabular}{l|llll}
+        内存地址 & 100 & 104 & 108 & 112 \\
+        \hline
+        大端机器 & \fbox{BE}\fbox{00}\fbox{00}\fbox{00} &Other Data & \fbox{40}\fbox{F0}\fbox{00}\fbox{00} & \fbox{00}\fbox{44} \\
+        小端机器 & \fbox{00}\fbox{00}\fbox{00}\fbox{BE} & Other Data & \fbox{00}\fbox{00}\fbox{F0}\fbox{40} & \fbox{44}\fbox{00}
+    \end{tabular}
+    
+    \item[5] We are running programs on a machine with the following characteristics:
+    \begin{itemize}
+        \item  Values of type int are 32 bits. They are represented in two’s complement, and they are right shifted arithmetically. Values of type unsigned are 32 bits.
+        \item Values of type float are represented using the 32-bit IEEE ﬂoating point format, while values of type double use the 64-bit IEEE ﬂoating point format.
+        \item We generate arbitrary values x, y, and z, and convert them to other forms as follows:
+        \begin{minted}{cpp}
+    /* Create some arbitrary values */ 
+    int x = random();
+    int y = random();
+    int z = random();
+     /* Convert to other forms */ 
+    unsigned ux = (unsigned) x; 
+    unsigned uy = (unsigned) y; 
+    double dx = (double) x;
+    double dy = (double) y;
+    double dz = (double) z;
+        \end{minted}
+    \end{itemize}
+
+    For each of the following C expressions, you are to indicate whether or not the expression always yields 1. If so, circle ``Y''. If not, circle ``N'' and tell why. 
+     
+    \begin{tabular}{l|l|p{6cm}}
+        \hline
+        Expression & Always True? & Why?\\
+        \hline
+        \texttt{(x<y)==(-x>-y)} & Y \textcircled{N} & 最小的整型数其加法逆元仍为其本身，仍然是最小的整型数，在前者可能会真的时候，后者为假，这样整体会变成假。\\
+        \texttt{((x+y)<<4 + y-x == 17*y + 15*x)} & \textcircled{Y} N & \texttt{(x+y)<<4+y-x = 16*x+16*y+y-x = 17*x-15*x} 不影响运算结果。\\
+        \texttt{$\sim$x+$\sim$y+1==$\sim$(x+y)} & \textcircled{Y} N & \texttt{$\sim$x+$\sim$y+1 = (-(x+1))+(-(y+1))+1 = -(x+y)+1 = $\sim$(x+y)} 运算结果是不影响的。\\
+        \texttt{ux-uy==-(y-x)} & \textcircled{Y} N & 不影响运算结果，因为使用同一套加法减法器。\\
+        \texttt{(x>=0)||(x<ux)} & \textcircled{Y} N & $x<0$时，整型数的最高位必定为 1，无符号整型数必定为很大的正数，所以后者成立。\\
+        \texttt{((x>>1)<<1)<=x} & \textcircled{Y} N & 左边运算的结果是最后一位被替换成了0，那么这个记过一定是小于原来的数的，不论正负。\\
+        \texttt{(double)(float)x==(double)x} & Y \textcircled{N} & 先转换成 float 会有舍入现象，可能会导致不相等。\\
+        \texttt{dx + dy == (double) (y+x)} & Y \textcircled{N} & int 的两值相加可能会导致上溢，转换成 double 这个更大范围的量也会导致截断。\\
+        \texttt{dx + dy + dz == dz + dy + dx} & Y \textcircled{N} & 浮点数加法不符合结合律。\\
+        \texttt{dx * dy * dz == dz * dy * dx} & Y \textcircled{N} & 浮点数乘法不符合结合律。\\
+        \hline
+    \end{tabular}
+
+\end{problems}
+\end{document}

@@ -1,0 +1,12 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{c+cm}{/* Create some arbitrary values */}
+\PYG{k+kt}{int} \PYG{n}{x} \PYG{o}{=} \PYG{n}{random}\PYG{p}{();}
+\PYG{k+kt}{int} \PYG{n}{y} \PYG{o}{=} \PYG{n}{random}\PYG{p}{();}
+\PYG{k+kt}{int} \PYG{n}{z} \PYG{o}{=} \PYG{n}{random}\PYG{p}{();}
+ \PYG{c+cm}{/* Convert to other forms */}
+\PYG{k+kt}{unsigned} \PYG{n}{ux} \PYG{o}{=} \PYG{p}{(}\PYG{k+kt}{unsigned}\PYG{p}{)} \PYG{n}{x}\PYG{p}{;}
+\PYG{k+kt}{unsigned} \PYG{n}{uy} \PYG{o}{=} \PYG{p}{(}\PYG{k+kt}{unsigned}\PYG{p}{)} \PYG{n}{y}\PYG{p}{;}
+\PYG{k+kt}{double} \PYG{n}{dx} \PYG{o}{=} \PYG{p}{(}\PYG{k+kt}{double}\PYG{p}{)} \PYG{n}{x}\PYG{p}{;}
+\PYG{k+kt}{double} \PYG{n}{dy} \PYG{o}{=} \PYG{p}{(}\PYG{k+kt}{double}\PYG{p}{)} \PYG{n}{y}\PYG{p}{;}
+\PYG{k+kt}{double} \PYG{n}{dz} \PYG{o}{=} \PYG{p}{(}\PYG{k+kt}{double}\PYG{p}{)} \PYG{n}{z}\PYG{p}{;}
+\end{Verbatim}

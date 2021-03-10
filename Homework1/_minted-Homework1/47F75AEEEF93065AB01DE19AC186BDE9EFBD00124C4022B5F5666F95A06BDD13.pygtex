@@ -1,0 +1,6 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{k+kt}{int} \PYG{n}{x} \PYG{o}{=} \PYG{n}{foo}\PYG{p}{();} \PYG{c+c1}{//调用某某函数，给x赋值}
+\PYG{k+kt}{int} \PYG{n}{y} \PYG{o}{=} \PYG{n}{bar}\PYG{p}{();} \PYG{c+c1}{//调用某某函数，给y赋值}
+\PYG{k+kt}{unsigned} \PYG{n}{ux} \PYG{o}{=} \PYG{n}{x}\PYG{p}{;}
+\PYG{k+kt}{unsigned} \PYG{n}{uy} \PYG{o}{=} \PYG{n}{y}\PYG{p}{;}
+\end{Verbatim}
