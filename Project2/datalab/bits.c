@@ -145,19 +145,16 @@ NOTES:
  *   Rating: 2
  */
 int allOddBits(int x) {
-   // int x_o = x & 0xAAAAAAAA;
-   // return x_o == 0xAAAAAAAA;
 
    int mask = 0xAA;
-   int x_1 = x & mask;
+   int y = x & mask;
    x = x >> 8;
-   int x_2 = x & mask;
+   y = y & (x & mask);
    x = x >> 8;
-   int x_3 = x & mask;
+   y = y & (x & mask);
    x = x >> 8;
-   int x_4 = x & mask;
-   int x_min = x_1 & x_2 & x_3 & x_4;
-   return !(x_min ^ mask);
+   y = y & (x & mask);
+   return !(y ^ mask);
 
 }
 
@@ -167,22 +164,17 @@ int allOddBits(int x) {
  * isLessOrEqual - if x <= y  then return 1, else return 0
  *   Example: isLessOrEqual(4,5) = 1.
  *   Legal ops: ! ~ & ^ | + << >>
- *   Max ops: 24 > Program ops: 12
+ *   Max ops: 24 > Program ops: 15
  *   Rating: 3
  */
 int isLessOrEqual(int x, int y) {
-   // return -x + y >= 0
 
-   unsigned int sign_x = x;
-   unsigned int sign_y = y;
-   sign_x = sign_x >> 31;
-   sign_y = sign_y >> 31;
-   int diff = sign_x ^ sign_y; 
-   
+   int diff = (x >> 31) ^ (y >> 31);    
    int neg_sum = ~x + y;
-   unsigned int compare = neg_sum + 1;
+   int compare = neg_sum + 1;
    compare = compare >> 31;
-   return !(diff & sign_y) & ((diff & sign_x) | !compare);
+   return !(diff & (y >> 31)) & ((diff & (x >> 31)) | !compare);
+
 }
 
 //3
@@ -191,15 +183,16 @@ int isLessOrEqual(int x, int y) {
  *              the legal operators except !
  *   Examples: logicalNeg(3) = 0, logicalNeg(0) = 1
  *   Legal ops: ~ & ^ | + << >>
- *   Max ops: 12 > Program ops: 5
+ *   Max ops: 12 > Program ops: 6
  *   Rating: 4
  */
 int logicalNeg(int x) {
-   // return (~(x | (~x + 1))) & 0x80000000 == 0x80000000;
+
    int fone = x | (~x + 1);
-   unsigned int fbit = ~fone;
+   int fbit = ~fone;
    fbit = fbit >> 31;
-   return fbit;
+   return fbit & 0x01;
+
 }
 
 //4
@@ -217,18 +210,19 @@ int logicalNeg(int x) {
  */
 
 unsigned floatScale2(unsigned uf) {
-   int index = uf & (0xFF << 23);
-   unsigned int tail = uf & (-1>>9);
+
+   int index = uf & 0x7F800000;
+   unsigned int tail = uf & 0x007FFFFF;
    if(!index & !tail) return uf;                // 0
    if(!(~((index<<1)>>24))) return uf;          // NaN, inf
    if(!index && tail){                          // denorm
       unsigned int ntail = uf << 1;
-      return (uf & (1<<31)) + ntail;
+      return (uf & 0x80000000) + ntail;
    }
-   index = index + (1<<23);
-   uf = uf & 0x807FFFFF;                        // To be fixed
-   unsigned int newf = uf + index;
-   return newf;
+   index = index + 0x00800000;
+   uf = uf & 0x807FFFFF;
+   return uf + index;
+
 }
 
 //5
@@ -246,6 +240,7 @@ unsigned floatScale2(unsigned uf) {
  *   Rating: 4
  */
 int floatFloat2Int(unsigned uf) {
+
    unsigned int sym = uf >> 31;
 
    int index = uf & 0x7F800000;
@@ -266,6 +261,7 @@ int floatFloat2Int(unsigned uf) {
 
    if(sym) return ~tail+1;
    else return tail;
+
 }
 /*
  * floatPower2 - Return bit-level equivalent of the expression 2.0^x
