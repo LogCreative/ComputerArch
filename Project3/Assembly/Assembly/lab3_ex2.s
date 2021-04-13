@@ -22,8 +22,9 @@ main:
 	lw	$4,%lo(source)($2)
 	nop
 	beq	$4,$0,$L2
-	lui	$3,%hi(dest)
+	nop
 
+	lui	$3,%hi(dest)
 	lui	$2,%hi(source+4)
 	addiu	$3,$3,%lo(dest)
 	addiu	$2,$2,%lo(source+4)
@@ -31,12 +32,14 @@ $L3:
 	sw	$4,0($3)
 	lw	$4,0($2)
 	addiu	$3,$3,4
-	bne	$4,$0,$L3
 	addiu	$2,$2,4
+	bne	$4,$0,$L3
+	nop
 
 $L2:
-	jr	$31
 	move	$2,$0
+	jr	$31
+	nop
 
 	.set	macro
 	.set	reorder

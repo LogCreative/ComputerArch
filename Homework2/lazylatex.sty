@@ -75,7 +75,7 @@
 
 % Code blocks are using minted library
 % use -shell-escape upon compilation. 
-\RequirePackage{minted}
+\RequirePackage[outputdir=.texpadtmp]{minted}
 % Minted Line Number Colors
 \renewcommand{\theFancyVerbLine}{\sffamily
 \textcolor{Z3}{\scriptsize
@@ -264,7 +264,7 @@
 % Code Block
 \newtcblisting[auto counter,number format=\arabic,
 list inside=code]{code}[1]{
-	fontupper=\tt,
+	fontupper=\tt\scriptsize,
 	listing engine=minted,
 	listing only,
 	colback=colMintedBg,
@@ -272,7 +272,10 @@ list inside=code]{code}[1]{
 	arc=0pt,outer arc=0pt,boxsep=0pt,boxrule=0.5pt,
 	left=30pt,right=10pt,top=10pt,bottom=10pt,
 	minted language=#1,
-	minted options={breaklines,autogobble,linenos,numbersep=3mm},
+	minted options={breaklines,autogobble,
+	% linenos,
+	% numbersep=3mm
+	},
 	enhanced,
 	overlay={
 	\begin{tcbclipinterior}

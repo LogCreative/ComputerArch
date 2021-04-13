@@ -1,5 +1,6 @@
 {
     "[latex]": {
+
         "editor.formatOnPaste": false,
         "editor.suggestSelection": "recentlyUsedByPrefix"
     },
@@ -48,10 +49,9 @@
     ],
     "latex-workshop.latex.recipes": [
         {
-            "name": "pdflatex*2",
+            "name": "pdflatex",
             "tools": [
-                "pdflatex",
-                "pdflatex",
+                "pdflatex"
             ]
         },
         {
@@ -92,4 +92,5 @@
         "ctype.h": "c",
         "signal.h": "c"
     },
+    "latex-workshop.latex.autoBuild.run": "onSave",
 }

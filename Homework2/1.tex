@@ -1,0 +1,166 @@
+% docx2tex 1.6 --- ``The last thing your Word file sees before the recycle bin.'' 
+% 
+% docx2tex is Open Source and  
+% you can download it on GitHub: 
+% https://github.com/transpect/docx2tex 
+%  
+\documentclass{scrbook} 
+\usepackage[T1]{fontenc} 
+\usepackage[utf8]{inputenc} 
+\usepackage{graphicx} 
+\usepackage{hyperref} 
+\usepackage{multirow} 
+\usepackage{tabularx} 
+\usepackage{color} 
+\usepackage{textcomp} 
+\usepackage{tipa}
+\usepackage{amsmath} 
+\usepackage{amssymb} 
+\usepackage{amsfonts} 
+\usepackage{amsxtra} 
+\usepackage{wasysym} 
+\usepackage{isomath} 
+\usepackage{mathtools} 
+\usepackage{txfonts} 
+\usepackage{upgreek} 
+\usepackage{enumerate} 
+\usepackage{tensor} 
+\usepackage{pifont} 
+\usepackage{soul} 
+\usepackage{arydshln} 
+\usepackage[english]{babel}
+\usepackage{ctex}
+
+\definecolor{color-1}{rgb}{1,0,0}
+
+\begin{document}
+
+\begin{center}
+处理器设计（作业）
+\end{center}
+
+
+1.~\textbf{单周期处理器控制逻辑}\label{mark-1.}
+
+这是一个单周期处理器的数据通路（single cycle CPU diagram）：
+
+\includegraphics[width=0.166666666666666667\textwidth]{处理器(作业）.docx.tmp/word/media/image1.png}\textcolor{color-1}{在下表中填写出上图中各个控制信号的数值：}
+
+\includegraphics[width=0.166666666666666667\textwidth]{处理器(作业）.docx.tmp/word/media/image2.png}这个表格给出了算术逻辑单元每个操作的ALUCtr值：
+
+\includegraphics[width=0.166666666666666667\textwidth]{处理器(作业）.docx.tmp/word/media/image3.png}2.~\textbf{单周期处理器的性能分析}\label{mark-2.}
+
+时钟分析方法： 
+\begin{itemize}
+\item 每个状态元件的输入信号必须在时上升沿之前稳定下来。 
+
+\item 关键路径（critical path）：电路中状态元件之间最长的延迟路径。 
+
+\item t$_{\mathrm{clk}}$ ${\geq}$ t$_{\mathrm{clk-to-q}}$ + t$_{\mathrm{CL}}$ + t$_{\mathrm{setup}}$, 其中 t$_{\mathrm{CL}}$ 是组合逻辑中的关键路径 
+
+\item 如果我们把寄存器放在关键路径上，我们可以通过减少寄存器之间的逻辑量来缩短周期。
+
+电路元件的延时如下所示：
+
+
+\end{itemize}
+\includegraphics[width=0.166666666666666667\textwidth]{处理器(作业）.docx.tmp/word/media/image4.png}关于硬件中的时钟的一些术语说明：
+\begin{itemize}
+\item 时钟（CLK）：使系统同步的稳定方波
+
+\item 启动时间（setup time）：在时钟边沿之前，输入必须稳定的时间
+
+\item 保持时间（hold time）：在时钟边沿之后，输入必须稳定的时间
+
+\item ``CLK-to-Q''延迟（``CLK-to-Q'' delay）：从时钟边沿测量，改变输出需要多长时间
+
+\item 周期（period）=最大延迟=``CLK-to-Q''延迟+CL延迟+启动时间
+
+\item 时钟频率=1/周期（即周期的倒数）
+
+
+\end{itemize}
+\textcolor{color-1}{回答问题：}
+
+1)~\textcolor{color-1}{用到关键路径（critical path）的指令是哪一条？}\label{mark-1)}\begin{enumerate}[1)]
+\setcounter{enumi}{1}
+
+\item[2)] \textcolor{color-1}{最小时钟周期 t}$_{\mathrm{clk}}$\textcolor{color-1}{是多少？最大时钟频率f}$_{\mathrm{clk}}$\textcolor{color-1}{是什么？假设t}$_{\mathrm{clk-to-q}}$ \textcolor{color-1}{> 保持时间（hold time）.} 
+
+\item[3.] \textbf{流水线处理器设计（Pipelined CPU Design）} 
+
+\end{enumerate}
+现在，我们将使用流水线方法来优化一个单周期处理器。流水线虽然增加了单个任务的延迟，但它可以减少时钟周期，提高吞吐量。 在流水线处理器中，多条指令重叠执行，体现了指令级并行性。
+
+为了设计流水线，我们已经将单周期处理器分成五个阶段，在每两个阶段之间增加流水段寄存器。
+
+接下来进行性能分析：
+
+我们将使用与上一题相同的时钟参数：
+
+\includegraphics[width=0.166666666666666667\textwidth]{处理器(作业）.docx.tmp/word/media/image4.png}\textcolor{color-1}{回答问题：}
+
+1)	\textcolor{color-1}{这个五阶段流水线处理器的最小时钟周期长度和最大时钟频率分别是多少？}
+
+2)	\textcolor{color-1}{相比于单周期处理器，性能加速比（speed up）是多少？为什么加速比会小于5？}
+
+4.~\textbf{控制冒险（Control Hazard）} \label{mark-4.}
+
+遇到branch和jump指令的时候会发生控制冒险。我们可以通过暂停流水线来解决。但是，由于分支条件是在执行阶段计算的，流水线需要停顿三个周期。我们可以在寄存器读取阶段增加一个分支比较器，并引入一个转移延迟槽（delayed slot），使分支语句(branch)后的指令总是会被执行。
+
+问题：
+
+考虑填充转移延迟槽，我们需要重新排列以下几组指令，如果实在找不到指令填充延迟槽，你可能需要插入一条nop指令。
+
+\includegraphics[width=0.166666666666666667\textwidth]{处理器(作业）.docx.tmp/word/media/image5.png}5.~\textbf{转移延迟槽}\label{mark-5.}
+
+考虑以下两种设计：
+\begin{itemize}
+\item 第一种设计为每一条branch指令设计两个转移延迟槽（delay slots), 但不使用转移预测（branch prediction),而是在编译时调度可用的指令填充转移延迟槽。假设其中30\%的branch指令在编译时能找到指令将两个延迟槽填满，60\%的branch指令在编译时只能找到指令填充一个延迟槽，剩下10\%的branch指令的两个延迟槽在编译时无法填充。
+
+\item 第二种设计不采用转移延迟槽（delay slots)，而是采用转移预测（Branch Prediction）。转移预测错误的开销（mis-prediction penalty)是3个周期。Branch指令本身需要花一周期执行，但如果转移预测错误，就会增加3个额外周期的开销。
+
+
+\end{itemize}
+\textbf{\textcolor{color-1}{如果需要第二种设计能达到第一种设计的性能，转移预测的准确度应该为多少？}}
+
+6.~\textbf{指令调度}\label{mark-6.}
+
+假定在一个有转发（forwarding）功能的五段流水线中执行以下程序段，则可以怎样调整以下指令序列使其性能达到最好？\begin{enumerate}[1]
+
+
+\item[1] lw \$2, 100(\$6)
+
+\item[2] add \$2, \$2, \$3
+
+\item[3] lw \$3, 200(\$7)
+
+\item[4] add \$6, \$4, \$7
+
+\item[5] sub \$3, \$4, \$6
+
+\item[6] lw \$2, 300(\$8)
+
+\item[7] beq \$2, \$8, Loop
+
+\end{enumerate}
+
+\begin{description}
+\item[7.]\textbf{中断}
+
+\item[${\CIRCLE}$]当MIPS处理器在执行一条除法指令时，发生了除数为0异常（exception）。那么此时处理器就要进行中断处理。在中断处理过程中，最开始的一部分工作由硬件完成，描述一下: 
+
+
+\end{description}
+
+
+1）中断处理开始的阶段，硬件需要完成哪些工作，保存哪些状态？ 
+
+2）如果中断处理程序（interrupt handler）需要读寄存器R5, R6, R7， 写寄存器R5, R8, R10, 那么中断处理程序应该在一开始保留哪几个寄存器的值？
+
+3）ERET（中断返回）指令会触发硬件完成哪些动作？
+
+如果一条指令在执行阶段，即发生了``指令地址错误``异常，又发生了''ALU运算溢出``异常，那么这条指令被中断时，原因寄存器（cause register）中记录的中断原因，应该是哪一个？
+
+
+\end{document}
