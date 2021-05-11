@@ -1,0 +1,40 @@
+\begin{tikzpicture}
+\tikzstyle{box}=[minimum width=0.5cm,minimum height=0.5cm,draw,font=\tiny];
+\tikzstyle{inst}=[font=\ttfamily];
+
+\node [box] at (-1,0.5) {F};
+\node [box] at (-0.5,0.5) {D};
+\node [box] at (0,0.5) {E};
+\node [box,fill=green] (v1) at (0.5,0.5) {M};
+\node [box] at (1,0.5) {W};
+
+\node [inst] at (-2.5,0.5) {lw};
+\node [inst] at (-2.5,0) {add};
+
+\node [box] at (0.5,0) {D};
+\node [box,fill=green] (v2) at (1,0) {E};
+\node [box] at (1.5,0) {M};
+\node [box] at (2,0) {W};
+
+\node [box,fill=green] at (2,-0.5) {M};
+\node [box] at (2.5,-0.5) {W};
+\node [inst] at (-2.5,-0.5) {lw};
+
+
+\node [box,fill=yellow] at (2,-1) {E};
+\node [box] at (2.5,-1) {M};
+\node [box] at (3,-1) {W};
+\node [box,fill=yellow] at (2.5,-1.5) {E};
+\node [box] at (3,-1.5) {M};
+\node [box] at (3.5,-1.5) {W};
+\node [inst] at (-2.5,-1) {add};
+\node [inst] at (-2.5,-1.5) {sub};
+
+\node [box,fill=green] at (3.5,-2) {M};
+\node [box] at (4,-2) {W};
+\node [box,fill=green] at (4,-2.5) {E};
+\node [box] at (4.5,-2.5) {M};
+\node [box] at (5,-2.5) {W};
+\node [inst] at (-2.5,-2) {lw};
+\node [inst] at (-2.5,-2.5) {beq};
+\end{tikzpicture}

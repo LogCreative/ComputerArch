@@ -9,6 +9,7 @@
 \usepackage{enumerate}
 \usepackage{geometry}
 \usepackage{array}
+\usepackage{tikz}
 % \tcbuselibrary{documentation}
 \graphicspath{{img/}}
 % 边距
@@ -33,62 +34,62 @@
 \begin{problems}
     \item[1.] \textbf{单周期处理器控制逻辑}
     
-    % \includegraphics[width=0.8\textwidth]{p1.png}
+    \includegraphics[width=0.8\textwidth]{p1.png}
 
-    % 这个表格给出了算术逻辑单元每个操作的ALUCtr值：
+    这个表格给出了算术逻辑单元每个操作的ALUCtr值：
 
-    % \begin{tabular}{|c|cccccc|}
-    %     \hline
-    %     Operation & AND & OR & ADD & SUB & SLT & XOR \\
-    %     \hline
-    %     ALUStr & 0000 & 0001 & 0010 & 0110 & 0111 & 1100\\
-    %     \hline
-    % \end{tabular}
+    \begin{tabular}{|c|cccccc|}
+        \hline
+        Operation & AND & OR & ADD & SUB & SLT & XOR \\
+        \hline
+        ALUStr & 0000 & 0001 & 0010 & 0110 & 0111 & 1100\\
+        \hline
+    \end{tabular}
 
     在下表中填写出上图中各个控制信号的数值：
     
-    \begin{tabular}{c|ccccccc}
-        & \multicolumn{7}{c}{Control Signals}\\
-        Instrs. & \sffamily RegDst &\sffamily ExtOp &\sffamily ALUSrc &\sffamily ALUCtr &\sffamily MemWr &\sffamily MemtoReg &\sffamily RegWr \\ 
+    \begin{tabular}{c|ccccccccc}
+        & \multicolumn{9}{c}{Control Signals}\\
+        Instrs. & \sffamily jump & \sffamily branch & \sffamily RegDst &\sffamily ExtOp &\sffamily ALUSrc &\sffamily ALUCtr &\sffamily MemWr &\sffamily MemtoReg &\sffamily RegWr \\ 
         \hline
-        \ttfamily add & & & & & & & \\ 
-        \ttfamily ori & & & & & & & \\
-        \ttfamily lw  & & & & & & & \\ 
-        \ttfamily sw  & & & & & & & \\ 
-        \ttfamily beq & & & & & & & \\
-        \ttfamily j   & & & & & & & \\
+        \ttfamily add &0&0& X & X & 0 & 0010 & 0 & 0 & 1 \\ 
+        \ttfamily ori &0&0& 1 & 0 & 1 & 0001 & 0 & 0 & 1 \\
+        \ttfamily lw  &0&0& 1 & 1 & 1 & 0010 & 0 & 1 & 1 \\ 
+        \ttfamily sw  &0&0& X & 1 & 1 & 0010 & 1 & X & 0 \\ 
+        \ttfamily beq &0&1& X & 1 & 0 & 0110 & 0 & X & 0 \\
+        \ttfamily j   &1&0& X & X & X &  X   & 0 & X & 0 \\
         \hline
     \end{tabular}
 
 
     \item[2] \textbf{单周期处理器的性能分析}
     
-    % 时钟分析方法： 
-    % \begin{itemize}
-    %     \item 每个状态元件的输入信号必须在时上升沿之前稳定下来。
-    %     \item 关键路径（critical path）：电路中状态元件之间最长的延迟路径。 
-    %     \item $t_{clk} \geq t_{clk-to-q} + t_{CL} + t_{setup}$, 其中 $t_{CL}$ 是组合逻辑中的关键路径。
-    %     \item 如果我们把寄存器放在关键路径上，我们可以通过减少寄存器之间的逻辑量来缩短周期。
-    % \end{itemize}
-    % 电路元件的延时如下所示：
+    时钟分析方法： 
+    \begin{itemize}
+        \item 每个状态元件的输入信号必须在时上升沿之前稳定下来。
+        \item 关键路径（critical path）：电路中状态元件之间最长的延迟路径。 
+        \item $t_{clk} \geq t_{clk-to-q} + t_{CL} + t_{setup}$, 其中 $t_{CL}$ 是组合逻辑中的关键路径。
+        \item 如果我们把寄存器放在关键路径上，我们可以通过减少寄存器之间的逻辑量来缩短周期。
+    \end{itemize}
+    电路元件的延时如下所示：
 
-    % \begin{tabular}{c|m{4em}m{4em}m{3em}m{3em}m{4em}m{4em}m{4em}m{4em}}
-    %     Element & Register clk-to-q & Register Setup & MUX & ALU & Mem Read & Mem Write & RegFile Read & RegFile Setup\\
-    %     Paramenter & $t_{clk-to-q}$ & $t_{setup}$ & $t_{mux}$ & $t_{ALU}$ & $t_{MEMread}$ & $t_{MEMwrite}$ & $t_{RFread}$ & $T_{RFsetup}$\\
-    %     \hline
-    %     Delay & 30 & 20 & 25 & 200 & 250 & 200 & 150 & 20 \\
-    %     \hline
-    % \end{tabular}
+    \begin{tabular}{c|m{4em}m{4em}m{3em}m{3em}m{4em}m{4em}m{4em}m{4em}}
+        Element & Register clk-to-q & Register Setup & MUX & ALU & Mem Read & Mem Write & RegFile Read & RegFile Setup\\
+        Paramenter & $t_{clk-to-q}$ & $t_{setup}$ & $t_{mux}$ & $t_{ALU}$ & $t_{MEMread}$ & $t_{MEMwrite}$ & $t_{RFread}$ & $T_{RFsetup}$\\
+        \hline
+        Delay(ps) & 30 & 20 & 25 & 200 & 250 & 200 & 150 & 20 \\
+        \hline
+    \end{tabular}
  
-    % 关于硬件中的时钟的一些术语说明：
-    % \begin{itemize}
-    %     \item 时钟（CLK）：使系统同步的稳定方波
-    %     \item 启动时间（setup time）：在时钟边沿之前，输入必须稳定的时间
-    %     \item 保持时间（hold time）：在时钟边沿之后，输入必须稳定的时间
-    %     \item “CLK-to-Q”延迟（“CLK-to-Q” delay）：从时钟边沿测量，改变输出需要多长时间
-    %     \item 周期（period）=最大延迟=“CLK-to-Q”延迟+CL延迟+启动时间
-    %     \item 时钟频率=1/周期（即周期的倒数）
-    % \end{itemize}
+    关于硬件中的时钟的一些术语说明：
+    \begin{itemize}
+        \item 时钟（CLK）：使系统同步的稳定方波
+        \item 启动时间（setup time）：在时钟边沿之前，输入必须稳定的时间
+        \item 保持时间（hold time）：在时钟边沿之后，输入必须稳定的时间
+        \item “CLK-to-Q”延迟（“CLK-to-Q” delay）：从时钟边沿测量，改变输出需要多长时间
+        \item 周期（period）=最大延迟=“CLK-to-Q”延迟+CL延迟+启动时间
+        \item 时钟频率=1/周期（即周期的倒数）
+    \end{itemize}
 
     回答问题：
     \begin{enumerate}
@@ -96,20 +97,39 @@
         \item 最小时钟周期 $t_{clk}$是多少？最大时钟频率$f_{clk}$是什么？假设$t_{clk-to-q}>$ 保持时间（hold time）. 
     \end{enumerate}
 
+    \sol 
+
+    \begin{tabular}{>{\ttfamily}l|ccccc|c}
+        Instr. & Memread & RFread & ALU+MUX & MEMread & MUX+RFsetup & Total \\
+        \hline
+        (R)      & 200 & 150 & 225 & 0 & 45 & 620 \\
+        lw       & 200 & 150 & 225 & 250 & 45 & 870 \\
+        sw       & 200 & 150 & 225 & 250 &    & 825 \\
+        beq      & 200 & 150 & 225 & 0   &    & 575 \\
+        j        & 200 &     &     &     &    & 200  \\
+        \hline
+    \end{tabular}
+    
+    \begin{enumerate}
+        \item \texttt{lw} 用到关键路径。
+        \item $t_{clk}=30+870+20=920$ps, $f_{clk}=\frac{1}{\rm 920ps}=1.09$GHz。
+    \end{enumerate}
+
     \item[3] \textbf{流水线处理器设计（Pipelined CPU Design）} 
-    % 现在，我们将使用流水线方法来优化一个单周期处理器。流水线虽然增加了单个任务的延迟，但它可以减少时钟周期，提高吞吐量。 在流水线处理器中，多条指令重叠执行，体现了指令级并行性。
-    % 为了设计流水线，我们已经将单周期处理器分成五个阶段，在每两个阶段之间增加流水段寄存器。
-    % 接下来进行性能分析：
+    
+    现在，我们将使用流水线方法来优化一个单周期处理器。流水线虽然增加了单个任务的延迟，但它可以减少时钟周期，提高吞吐量。 在流水线处理器中，多条指令重叠执行，体现了指令级并行性。
+    为了设计流水线，我们已经将单周期处理器分成五个阶段，在每两个阶段之间增加流水段寄存器。
+    接下来进行性能分析：
 
-    % 我们将使用与上一题相同的时钟参数：
+    我们将使用与上一题相同的时钟参数：
 
-    % \begin{tabular}{c|m{4em}m{4em}m{3em}m{3em}m{4em}m{4em}m{4em}m{4em}}
-    %     Element & Register clk-to-q & Register Setup & MUX & ALU & Mem Read & Mem Write & RegFile Read & RegFile Setup\\
-    %     Paramenter & $t_{clk-to-q}$ & $t_{setup}$ & $t_{mux}$ & $t_{ALU}$ & $t_{MEMread}$ & $t_{MEMwrite}$ & $t_{RFread}$ & $T_{RFsetup}$\\
-    %     \hline
-    %     Delay & 30 & 20 & 25 & 200 & 250 & 200 & 150 & 20 \\
-    %     \hline
-    % \end{tabular}
+    \begin{tabular}{c|m{4em}m{4em}m{3em}m{3em}m{4em}m{4em}m{4em}m{4em}}
+        Element & Register clk-to-q & Register Setup & MUX & ALU & Mem Read & Mem Write & RegFile Read & RegFile Setup\\
+        Paramenter & $t_{clk-to-q}$ & $t_{setup}$ & $t_{mux}$ & $t_{ALU}$ & $t_{MEMread}$ & $t_{MEMwrite}$ & $t_{RFread}$ & $T_{RFsetup}$\\
+        \hline
+        Delay & 30 & 20 & 25 & 200 & 250 & 200 & 150 & 20 \\
+        \hline
+    \end{tabular}
 
     回答问题：
     \begin{itemize}
@@ -117,7 +137,38 @@
         \item 相比于单周期处理器，性能加速比（speed up）是多少？为什么加速比会小于5？
     \end{itemize}
 
+    \sol 
+    
+    \begin{align*}
+        t_{Fetch}&=t_{clk-to-q}+t_{MEMread}+t_{setup}=300\\
+        t_{Decode}&=t_{clk-to-q}+t_{RFread}+t_{setup}=200\\
+        t_{Execute}&=t_{clk-to-q}+t_{ALU}+t_{mux}+t_{setup}=275\\
+        t_{Memory}&=t_{clk-to-q}+t_{MEMread}+t_{setup}=300\\
+        t_{Writeback}&=t_{clk-to-q}+t_{mux}+t_{RFsetup}=75
+    \end{align*}
+
+    % \begin{tabular}{>{\ttfamily}l|ccccc|c}
+    %     Instr. & Fetch & Decode & Execute & Memory & Writeback & Total \\
+    %     \hline
+    %     (R)      & 300 & 200 & 275 & 0 & 75 & 850 \\
+    %     lw       & 300 & 200 & 275 & 300 & 75 & 1150 \\
+    %     sw       & 300 & 200 & 275 & 300 &    & 1075 \\
+    %     beq      & 300 & 200 & 275 & 0   &    & 775  \\
+    %     j        & 300 &     &     &     &    & 300  \\
+    %     \hline
+    % \end{tabular}
+
+    \begin{enumerate}
+        \item $t_{clkpipe}=300$ps, $f_{clkpipe}=\frac{1}{\rm 300ps}=3.33$GHz。
+        \item \begin{equation*}
+            \rm speed~up=\frac{3.33GHz}{1.09GHz}=3.06
+        \end{equation*}
+        因为段寄存器的存在导致每个阶段都需要时钟周期进行调控，从而事实上增大了每个步骤上的时间。
+    \end{enumerate}
+
     \item[4] \textbf{控制冒险（Control Hazard） }
+    
+    遇到branch和jump指令的时候会发生控制冒险。我们可以通过暂停流水线来解决。但是，由于分支条件是在执行阶段计算的，流水线需要停顿三个周期。我们可以在寄存器读取阶段增加一个分支比较器，并引入一个转移延迟槽（delayed slot），使分支语句(branch)后的指令总是会被执行。
     
     问题：
     考虑填充转移延迟槽，我们需要重新排列以下几组指令，如果实在找不到指令填充延迟槽，你可能需要插入一条nop指令。
@@ -125,15 +176,35 @@
     \begin{tabular}{>{\ttfamily}l>{\ttfamily}l|>{\ttfamily}l>{\ttfamily}l}
         \bfseries Set 1 &\bfseries Reordered set 1 &\bfseries Set 2 &\bfseries Reordered set 2\\
         \hline
-        addiu \$t0,\$t1,5 & & addiu \$t0,\$t1,5 & \\
-        ori \$t2,\$t3,0xff & & ori \$t2,\$t3,0xff & \\
-        beq \$t0,\$s0,label & & beq \$t0,\$t2,label & \\
-        lw \$t4,0(\$0) & & lw \$t4,0(\$0) & \\
+        addiu \$t0,\$t1,5 &  addiu \$t0,\$t1,5  & addiu \$t0,\$t1,5 & addiu \$t0,\$t1,5\\
+        ori \$t2,\$t3,0xff & beq \$t0,\$s0,label & ori \$t2,\$t3,0xff & ori \$t2,\$t3,0xff\\
+        beq \$t0,\$s0,label & ori \$t2,\$t3,0xff  & beq \$t0,\$t2,label & beq \$t0,\$t2,label \\
+        lw \$t4,0(\$0) & lw \$t4,0(\$0) & lw \$t4,0(\$0) & nop\\
+         & & &  lw \$t4,0(\$0)\\
     \end{tabular}
 
     \item[5] \textbf{转移延迟槽}
     
+    考虑以下两种设计：
+    \begin{itemize}
+        \item 第一种设计为每一条branch指令设计两个转移延迟槽（delay slots), 但不使用转移预测（branch prediction),而是在编译时调度可用的指令填充转移延迟槽。假设其中30\%的branch指令在编译时能找到指令将两个延迟槽填满，60\%的branch指令在编译时只能找到指令填充一个延迟槽，剩下10\%的branch指令的两个延迟槽在编译时无法填充。
+        \item 第二种设计不采用转移延迟槽（delay slots)，而是采用转移预测（Branch Prediction）。转移预测错误的开销（mis-prediction penalty)是3个周期。Branch指令本身需要花一周期执行，但如果转移预测错误，就会增加3个额外周期的开销。
+    \end{itemize}
+
     如果需要第二种设计能达到第一种设计的性能，转移预测的准确度应该为多少？
+
+    \sol 第一种设计浪费周期数的期望是：
+    \begin{equation}
+        30\% \times 1 + 60\% \times 2 + 10\% \times 3 = 1.8
+    \end{equation}
+    假设第二种设计转移预测的准确度为 $\alpha$，则第二种设计的浪费周期数期望为
+    \begin{equation}
+        0 \times \alpha + 3\times (1-\alpha) = 3 - 3\alpha
+    \end{equation}
+    因此，准确度应该为
+    \begin{equation}
+        \alpha = 40\%
+    \end{equation}
 
     \item[6] \textbf{指令调度}
 
@@ -148,6 +219,26 @@ lw   $2, 300($8)
 beq  $2, $8, Loop
     \end{minted}
 
+    \sol 原本的执行情况
+    
+    \input{img/ori.tex}
+
+    修改为
+
+    \begin{minted}{asm}
+lw   $2, 100($6)
+add  $6, $4, $7
+add  $2, $2, $3
+lw   $3, 200($7)
+lw   $2, 300($8)
+sub  $3, $4, $6
+beq  $2, $8, Loop
+    \end{minted}
+
+    就可以变为
+
+    \input{img/new.tex}
+
     \item[7] \textbf{中断}
  
 当MIPS处理器在执行一条除法指令时，发生了除数为0异常（exception）。那么此时处理器就要进行中断处理。在中断处理过程中，最开始的一部分工作由硬件完成，描述一下: 
@@ -158,6 +249,12 @@ beq  $2, $8, Loop
     \item 如果一条指令在执行阶段，即发生了“指令地址错误“异常，又发生了”ALU运算溢出“异常，那么这条指令被中断时，原因寄存器（cause register）中记录的中断原因，应该是哪一个？
 \end{enumerate}
     
+\ans \begin{enumerate}
+    \item 需要使用 EPC 寄存器保存发生异常的指令地址，设置 STATUS 寄存器中的一个控制位 SR(EXL)，强迫 CPU 进入 kernel 态，进制中断响应，以及使用 Cause 寄存器记录异常原因。最后 CPU 开始从一个统一入口取指令。
+    \item R5,R8,R10.
+    \item 会将 EPC 中的内容移入 PC，并将 SR(EXL) 清零，即开中断，允许新的中断相应，CPU进入用户态。接下来重新执行被异常事件中断的那条指令。
+    \item “指令地址错误”异常。（记录的是第一个）
+\end{enumerate}
 
 \end{problems}
 \end{document}
