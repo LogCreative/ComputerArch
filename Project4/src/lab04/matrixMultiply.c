@@ -17,18 +17,23 @@ void multMat1( int n, float *A, float *B, float *C ) {
     int i,j,k;
     /* This is ijk loop order. */
     for( i = 0; i < n; i++ )
-        for( j = 0; j < n; j++ )
+        for( j = 0; j < n; j++ ){
+            float sum = 0.0;
             for( k = 0; k < n; k++ )
-                C[i*n+j] += A[i*n+k]*B[k*n+j];
+                sum += A[i*n+k]*B[k*n+j];
+            C[i*n+j] += sum;
+        }
 }
 
 void multMat2( int n, float *A, float *B, float *C ) {
     int i,j,k;
     /* This is ikj loop order. */
     for( i = 0; i < n; i++ )
-        for( k = 0; k < n; k++ )
+        for( k = 0; k < n; k++ ){
+            float r = A[i*n+k];
             for( j = 0; j < n; j++ )
-                  C[i*n+j] += A[i*n+k]*B[k*n+j];
+                  C[i*n+j] += r*B[k*n+j];
+        }
 
 }
 
@@ -36,36 +41,45 @@ void multMat3( int n, float *A, float *B, float *C ) {
     int i,j,k;
     /* This is jik loop order. */
     for( j = 0; j < n; j++ )
-        for( i = 0; i < n; i++ )
+        for( i = 0; i < n; i++ ){
+            float sum = 0.0;
             for( k = 0; k < n; k++ )
-                  C[i*n+j] += A[i*n+k]*B[k*n+j];
+                sum += A[i*n+k]*B[k*n+j];
+            C[i*n+j] += sum;
+        }
 }
 
 void multMat4( int n, float *A, float *B, float *C ) {
     int i,j,k;
     /* This is jki loop order. */
     for( j = 0; j < n; j++ )
-        for( k = 0; k < n; k++ )
+        for( k = 0; k < n; k++ ){
+            float r = B[k*n+j];
             for( i = 0; i < n; i++ )
-                  C[i*n+j] += A[i*n+k]*B[k*n+j];
+                C[i*n+j] += A[i*n+k]*r;
+        }
 }
 
 void multMat5( int n, float *A, float *B, float *C ) {
     int i,j,k;
     /* This is kij loop order. */
     for( k = 0; k < n; k++ )
-        for( i = 0; i < n; i++ )
+        for( i = 0; i < n; i++ ){
+            float r = A[i*n+k];
             for( j = 0; j < n; j++ )
-                  C[i*n+j] += A[i*n+k]*B[k*n+j];
+                  C[i*n+j] += r*B[k*n+j];
+        }
 }
 
 void multMat6( int n, float *A, float *B, float *C ) {
     int i,j,k;
     /* This is kji loop order. */
     for( k = 0; k < n; k++ )
-        for( j = 0; j < n; j++ )
+        for( j = 0; j < n; j++ ){
+            float r = B[k*n+j];
             for( i = 0; i < n; i++ )
-                  C[i*n+j] += A[i*n+k]*B[k*n+j];
+                C[i*n+j] += A[i*n+k]*r;
+        }
 }
 
 /* uses timing features from sys/time.h that you haven't seen before */

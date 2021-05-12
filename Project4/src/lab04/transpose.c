@@ -16,6 +16,16 @@ void transpose_naive(int n, int blocksize, int *dst, int *src) {
  * multiple of the block size. */
 void transpose_blocking(int n, int blocksize, int *dst, int *src) {
     // YOUR CODE HERE
+    for(int i = 0; i < n; i += blocksize)
+        for(int j = 0; j < n ; j += blocksize)
+            // (j,i) is the starting element
+            // of the block
+            for(int x = 0; x < blocksize &&  i + x < n; ++x)
+                for(int y = 0; y < blocksize &&  j + y < n; ++y)
+                    // (j+y,i+x) is the transposing element
+                    // of the matrix.
+                    // (i+x,j+y) is the final position.
+                    dst[j+y + (i+x)*n] = src[i+x + (j+y)*n];
 }
 
 void benchmark(int *A, int *B, int n, int blocksize,
