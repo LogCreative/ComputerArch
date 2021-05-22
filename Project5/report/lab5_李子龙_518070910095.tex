@@ -157,6 +157,112 @@
     
 	\item[三] \textbf{书写 SIMD 代码}
 	
+	函数 \verb"sum_vectorized()" 的实现如下。
 	
+	\begin{lstlisting}[language=c]
+static int sum_vectorized(int n, int *a)
+{
+    // WRITE YOUR VECTORIZED CODE HERE
+
+	// the parallelization could only
+	// apply on aligned groups
+	int groups =  n / 4;
+
+	// On linux, int is 32-bit wide.
+	// 128-bit = 4 int;
+	// Initialize sum vector of 128-bit as zero.
+	__m128i sum = _mm_setzero_si128();
+
+	// For loop will add numbers on mod 4 basis.
+	for(int i = 0; i < groups; ++i){
+		// load a vector of adders.
+		__m128i adder = _mm_loadu_si128(a + i * 4);
+
+		// add the vector to a temporary variable.
+		__m128i added = _mm_add_epi32(sum, adder);
+
+		// store the value to the sum vector.
+		_mm_storeu_si128(&sum, added);
+	}
+
+	int result = 0;
+
+	// However there is some remaining numbers
+	// that didn't count, whose quantity is < 4.
+	int remain = n - groups * 4;
+	int tip = groups * 4;
+
+	// For each offset, calulate manually.
+	for(int j = 0; j < remain; ++j)
+		result += a[tip++];
+
+	// and to get the final result, the member
+	// of the vector in sum has to be added as well,
+	// in other word, 4 numbers.
+	
+	// For each right shift, get the lower 32 bit.
+	// which is one unit and add to the result.
+	for(int i = 0; i < 4; ++i)
+		result += _mm_cvtsi128_si32(_mm_srli_si128(sum,i * 4));
+
+    return result;
+}
+	\end{lstlisting}
+
+	第一轮测评性能得到了改善（提升了 236\%），输出结果如下：
+	\begin{figure}[h]
+		\centering
+		\includegraphics[width=\textwidth]{benchmark1.png}
+	\end{figure}
+	
+	\item[四] \textbf{循环展开}
+	
+	函数 \verb"sum_vectorized_unrolled()" 的实现如下：
+	\begin{lstlisting}[language=c]
+static int sum_vectorized_unrolled(int n, int *a)
+{
+    // UNROLL YOUR VECTORIZED CODE HERE
+
+	__m128i sum = _mm_setzero_si128();
+
+	// For unrolled scenario,
+	// every loop will contribute 128 * 4 = 512 bit operation.
+	for(int i = 0; i < n / 16 * 16; i += 16){
+		_mm_storeu_si128(&sum, _mm_add_epi32(sum, _mm_loadu_si128(a + i )));
+		_mm_storeu_si128(&sum, _mm_add_epi32(sum, _mm_loadu_si128(a + i + 4)));
+		_mm_storeu_si128(&sum, _mm_add_epi32(sum, _mm_loadu_si128(a + i + 8)));
+		_mm_storeu_si128(&sum, _mm_add_epi32(sum, _mm_loadu_si128(a + i + 12)));
+	}
+	
+	int result = 0;
+	for(int i = n / 16 * 16; i < n; i++)
+		result += a[i];
+	
+	for(int k = 0; k < 4; ++k)
+		result += _mm_cvtsi128_si32(_mm_srli_si128(sum,k * 4));
+
+    return result;
+}
+	\end{lstlisting}
+
+	第二轮测评结果也得到了改善（提升了 274\%），输出结果如下：
+	\begin{figure}[h]
+		\centering
+		\includegraphics[width=\textwidth]{benchmark2.png}
+	\end{figure}
+
+	\begin{tikzpicture}
+		\begin{axis}[width=0.8\textwidth,
+		height={5cm},
+		xmin={0},
+		legend pos={outer north east},
+		title={sum performance (ms)},
+		symbolic y coords={naive, unrolled},xbar,enlarge y limits=0.8,]
+		 \addplot+ [] coordinates { (3.77,naive) (2.92,unrolled)};
+		 \addplot+ [] coordinates { (1.12,naive) (0.78,unrolled)};
+		 \legend{plain,vectorized,}
+		\end{axis}
+		\end{tikzpicture}		
+
 \end{problems}
 \end{document}
