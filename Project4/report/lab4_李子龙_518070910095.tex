@@ -8,6 +8,7 @@
 \usepackage{tikz}
 \usetikzlibrary{matrix}
 \usepackage{pgfplots}
+\usepgfplotslibrary{colorbrewer}
 \pgfplotsset{compat=1.17}
 \usepackage{xcolor}
 \usepackage{listings}
@@ -303,6 +304,96 @@ void transpose_blocking(int n, int blocksize, int *dst, int *src) {
         \end{figure}
 
         图像是一致的。块的大小为 $8\times8=64$ bytes，因为从8开始就是每个高速缓存行一次访问，所以0$\sim$8都是块大小以内的范围。
+
+    \end{itemize}
+
+    \item[5] （选做）
+
+    \begin{itemize}
+        \item 教材图形比较不清晰，不作答。
+        \item 本程序直接在 Windows 环境下测试，结果如图 \ref{fig:test}。
+        \begin{figure}[h]
+            \centering
+            \begin{tikzpicture}
+                \begin{semilogyaxis}[
+                    symbolic x coords={4B,8B,16B,32B,64B,128B,256B,512B,1K,2K,4K,8K,16K,32K,64K,128K,256K,512K,1M,2M,4M,8M,16M,32M},
+                    colormap/Reds,
+                    cycle multiindex* list={
+                    [indices of colormap={0,1,...,14}]\nextlist
+                    mark list*\nextlist
+                    },
+                    legend pos={outer north east},
+                    width=0.85\textwidth,
+                    height=10cm,
+                    xlabel={步长},
+                    ylabel={平均访存延迟(ns)},
+                    enlarge x limits=0.05,]
+                \pgfplotstableread [col sep=comma] {evaluatenew.csv}{\dt};
+                \foreach \c in {4K,8K,16K,32K,64K,128K,256K,512K,1M,2M,4M,8M,16M,32M,64M}
+                \addplot+ [] table[x=stride,y=\c] {\dt};
+                \draw[blue] (axis cs:4B,1.1) -- (axis cs:32M,1.1);
+                \node[blue,above] at (axis cs:32M,1.1) {L1 hit};
+                \draw[blue!70] (axis cs:4B,3) -- (axis cs:32M,3);
+                \node[blue!70,above] at (axis cs:32M,3) {L2 hit};
+                \draw[blue!50] (axis cs:4B,7) -- (axis cs:32M,7);
+                \node[blue!50,above] at (axis cs:32M,7) {L3 hit};
+                \draw[blue!30] (axis cs:4B,20) -- (axis cs:32M,20);
+                \node[blue!30,above] at (axis cs:32M,20) {L4 hit};
+                \draw[blue!10] (axis cs:4B,30) -- (axis cs:32M,30);
+                \node[blue!10,above] at (axis cs:32M,30) {Mem};
+                \legend{4K,8K,16K,32K,64K,128K,256K,512K,1M,2M,4M,8M,16M,32M,64M}
+                \end{semilogyaxis}
+            \end{tikzpicture}
+            \begin{tikzpicture}
+                \begin{axis}[
+                    symbolic x coords={4B,8B,16B,32B,64B,128B,256B,512B,1K,2K,4K,8K,16K,32K,64K,128K,256K,512K,1M,2M,4M,8M,16M,32M},
+                    colormap/Reds,
+                    cycle multiindex* list={
+                    [indices of colormap={0,1,...,14}]\nextlist
+                    mark list*\nextlist
+                    },
+                    legend pos={outer north east},
+                    width=0.85\textwidth,
+                    height=10cm,
+                    xlabel={步长},
+                    ylabel={平均访存延迟(ns)},
+                    enlarge x limits=0.05,]
+                \pgfplotstableread [col sep=comma] {evaluatenew.csv}{\dt};
+                \foreach \c in {4K,8K,16K,32K,64K,128K,256K,512K,1M,2M,4M,8M,16M,32M,64M}
+                \addplot+ [] table[x=stride,y=\c] {\dt};
+                \draw[blue!70] (axis cs:4B,37) -- (axis cs:32M,37);
+                \node[blue!70,above right] at (axis cs:4B,37) {L2+TLB miss};
+                \draw[blue!50] (axis cs:4B,68) -- (axis cs:32M,68);
+                \node[blue!50,above right] at (axis cs:4B,68) {L3+TLB miss};
+                \draw[blue!30] (axis cs:4B,74) -- (axis cs:32M,74);
+                \node[blue!30,above right] at (axis cs:4B,74) {Mem+TLB miss};
+                \draw[orange!30] (axis cs:8K,\pgfkeysvalueof{/pgfplots/ymin}) -- (axis cs:8K,\pgfkeysvalueof{/pgfplots/ymax});
+                \node[orange!30,below right] at (axis cs:8K,\pgfkeysvalueof{/pgfplots/ymax}) {Page};
+                \legend{4K,8K,16K,32K,64K,128K,256K,512K,1M,2M,4M,8M,16M,32M,64M}
+                \end{axis}
+            \end{tikzpicture}
+            \caption{测评结果}
+            \label{fig:test}
+        \end{figure}
+        \item 页大小为 8K。
+        \item 二级TLB数目:$\frac{\rm 4M}{\rm 8K} = 512$
+        一级TLB数目：$\frac{\rm 512K}{\rm 8K}=64$
+        \item miss penalty 大概 6ns。
+        \item 一级8路组相连，二级4路组相联。可见于淡颜色组和中颜色组。
+        % \item L2 块大小为 256B。L1块大小为 64B。
+        \item CPU-Z 的报告如图 \ref{fig:cpuz}。
+        \begin{figure}[h]
+            \centering
+            \includegraphics[width=0.7\textwidth]{cpu.png}\\
+            \includegraphics[width=0.7\textwidth]{cpuz.png}
+            \caption{CPU-Z}
+            \label{fig:cpuz}
+        \end{figure}
+    \end{itemize}
+
+    \begin{itemize}
+        \item 2个处理器，共4个逻辑处理器。
+        \item 双通道内存。
     \end{itemize}
 
 \end{problems}
