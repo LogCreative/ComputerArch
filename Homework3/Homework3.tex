@@ -92,11 +92,13 @@ Address Size & Cache size & Block Size &tag bits & Index bits & Offset bits & Bi
         \cline{2-5}
     \end{tabular}
 
-    每块可以存储 4 个 \verb"long long" 数据。高速缓存访问的 32 次中，8次会miss，故高速缓存失效率为
-    \begin{equation*}
-        \frac{8}{32}\times 100 \% = 25\%
-    \end{equation*}
+    % 每块可以存储 4 个 \verb"long long" 数据。高速缓存访问的 32 次中，8次会miss，故高速缓存失效率为
+    % \begin{equation*}
+    %     \frac{8}{32}\times 100 \% = 25\%
+    % \end{equation*}
     
+    100\%
+
     \item[4] \textbf{平均存储器访问时间（Average Memory Access Time：AMAT）}
      
     \includegraphics[width=\textwidth]{cache.pdf}
